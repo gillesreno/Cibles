@@ -40,6 +40,8 @@ let indexDernierScore = -1;// Index du dernier score (ou score courant virtuel) 
 /* Chargement des scores depuis le localStorage */
 const scoresJson = localStorage.getItem('scoresJeu1'); // Récupère une chaîne JSON des scores précédemment sauvegardés (si elle existe).
 
+envoyerTrigger();
+
 if (scoresJson) {
   try { scores = JSON.parse(scoresJson) || []; } catch (e) { scores = []; }
   // Si on a trouvé une chaîne, on essaie de la parser en tableau.
@@ -512,3 +514,4 @@ document.addEventListener('pointerdown', function unlockAudio() {// Sur le premi
 
   document.removeEventListener('pointerdown', unlockAudio);// On enlève cet écouteur, car cette opération n’est à faire qu’une seule fois.
 });
+
