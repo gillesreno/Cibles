@@ -397,18 +397,44 @@ accueilScores.addEventListener('click', () => {// Quand on clique sur "Scores" d
   boutonMenuFin.style.display = 'inline-block';// Affiche le bouton "Menu" pour revenir à l’accueil.
 
   // Créer bouton démarrer si pas déjà présent
-  if (!document.getElementById('demarrer-score')) {// Si le bouton "Démarrer" spécifique au tableau des scores n’existe pas encore…
-    const btnDemarrer = document.createElement('button');// On le crée.
-    btnDemarrer.id = 'demarrer-score';// On lui donne un id pour pouvoir le retrouver.
-    btnDemarrer.textContent = 'Démarrer';// Texte du bouton.
-    btnDemarrer.className = 'btn';// Classe CSS (probablement la même que les autres boutons).
-    finContainer.querySelector('#fin-boutons').prepend(btnDemarrer);// On insère ce bouton en premier dans le conteneur des boutons de fin.
-    btnDemarrer.addEventListener('click', () => {// Quand on clique sur ce bouton…
-      btnDemarrer.remove();// On supprime le bouton (pour ne pas le garder pendant la partie).
-      boutonMenuFin.style.display = 'none';// On cache le bouton "Menu" pour ne pas quitter par erreur pendant la partie.
-      lancerNouvellePartie();// On lance une nouvelle partie.
+if (!document.getElementById('demarrer-score')) { // Si le bouton "Démarrer" spécifique au tableau des scores n’existe pas encore…
+  const btnDemarrer = document.createElement('button'); // On le crée.
+  btnDemarrer.id = 'demarrer-score'; // On lui donne un id pour pouvoir le retrouver.
+  btnDemarrer.textContent = 'Démarrer'; // Texte du bouton.
+  btnDemarrer.className = 'btn'; // Classe CSS (probablement la même que les autres boutons).
+  finContainer.querySelector('#fin-boutons').prepend(btnDemarrer); // On insère ce bouton en premier dans le conteneur des boutons de fin.
+
+  btnDemarrer.addEventListener('click', () => { // Quand on clique sur ce bouton…
+
+    // --- ENVOI DU TRIGGER ---
+    const url = "http://192.168.126.68:9100/";
+    console.log("Envoi de 'trigger' vers", url);
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: "trigger"
+    })
+    .then(r => {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.text();
+    })
+    .then(txt => {
+      console.log("Réponse serveur :", txt);
+    })
+    .catch(err => {
+      console.error("Erreur fetch :", err);
     });
-  }
+
+    // --- COMPORTEMENT EXISTANT (INCHANGÉ) ---
+    btnDemarrer.remove();                 // Supprime le bouton
+    boutonMenuFin.style.display = 'none'; // Cache le menu
+    lancerNouvellePartie();               // Lance la partie
+  });
+}
+
 
   indexDernierScore = -1;// On ne met en avant aucun score particulier.
 
