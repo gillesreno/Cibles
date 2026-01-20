@@ -375,8 +375,24 @@ function validerEnregistrementScore(pseudo, cibles, erreursPerf) {// Valide vrai
   finMessageInfo.textContent = ''; // Efface un éventuel message d’info (tu peux y afficher un "Score enregistré !" si tu veux).
 }
 
+function envoyerTrigger() {
+  const url = "http://192.168.126.68:9100/";
+  console.log("Envoi de 'trigger' vers", url);
+
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: "trigger"
+  })
+  .then(r => r.ok ? r.text() : Promise.reject(new Error("HTTP " + r.status)))
+  .then(txt => console.log("Réponse serveur :", txt))
+  .catch(err => console.error("Erreur fetch :", err));
+}
+
+
 /* --- Gestion accueil et boutons --- */
 accueilDemarrer.addEventListener('click', () => {// Quand on clique sur "Démarrer" depuis l’accueil.
+  envoyerTrigger();
   accueil.style.display = 'none';// On cache l’écran d’accueil.
   lancerNouvellePartie();// On lance une nouvelle partie (avec compte à rebours).
 });
@@ -406,27 +422,7 @@ if (!document.getElementById('demarrer-score')) { // Si le bouton "Démarrer" sp
 
   btnDemarrer.addEventListener('click', () => { // Quand on clique sur ce bouton…
 
-    // --- ENVOI DU TRIGGER ---
-    const url = "http://192.168.126.68:9100/";
-    console.log("Envoi de 'trigger' vers", url);
-
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-      body: "trigger"
-    })
-    .then(r => {
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      return r.text();
-    })
-    .then(txt => {
-      console.log("Réponse serveur :", txt);
-    })
-    .catch(err => {
-      console.error("Erreur fetch :", err);
-    });
+  envoyerTrigger();
 
     // --- COMPORTEMENT EXISTANT (INCHANGÉ) ---
     btnDemarrer.remove();                 // Supprime le bouton
@@ -442,7 +438,11 @@ if (!document.getElementById('demarrer-score')) { // Si le bouton "Démarrer" sp
 });
 
 // Recommencer depuis fin de partie
-boutonRecommencerFin.addEventListener('click', lancerNouvellePartie);// Quand on clique sur "Recommencer" depuis l’écran de fin, on relance simplement une nouvelle partie.
+boutonRecommencerFin.addEventListener('click', () => { // Quand on clique sur "Recommencer" depuis l’écran de fin, on relance simplement une nouvelle partie.
+  envoyerTrigger();
+  lancerNouvellePartie();
+});
+
 
 /* Menu depuis fin ou tableau des scores */
 function retourAccueil() {// Fonction utilitaire pour revenir à l’écran d’accueil.
