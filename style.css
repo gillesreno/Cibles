@@ -1,0 +1,88 @@
+/* style.css*/
+
+/* Variables */
+:root{ /* Définit la portée globale des variables CSS (racine du document). */
+  --bg:#071021; /* Variable couleur de fond principale utilisée dans la palette. */
+  --panel: rgba(255,255,255,0.04); /* Variable couleur semi-transparente pour panneaux (effet overlay). */
+  --accent1:#ff6b6b; /* Variable couleur accent principale (teinte rouge/néon). */
+  --accent2:#ffd56b; /* Variable couleur accent secondaire (jaune chaud). */
+  --text:#e6eef8; /* Variable couleur du texte principal. */
+  --muted:#b9c6d8; /* Variable couleur pour texte secondaire ou atténué. */
+  --neon-shadow: 0 0 22px rgba(255,107,107,0.22), 0 0 40px rgba(255,107,107,0.08); /* Variable définissant un effet d’ombre lumineux "néon" réutilisable. */
+  --target-min:56px; /* Variable taille minimale de la cible. */
+  --target-max:110px; /* Variable taille maximale de la cible. */
+  --radius:12px; /* Variable rayon de bordure standard pour arrondir les éléments. */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; /* Variable police sans-serif principale pour le texte courant. */
+  --font-arcade: 'Press Start 2P', monospace; /* Variable police "arcade" pour titres / style rétro. */
+}
+
+*{box-sizing:border-box} /* Applique border-box globalement pour simplifier le calcul des tailles. */
+html,body{height:100%;margin:0;background:linear-gradient(180deg,#071021 0%, #08122b 60%, #041029 100%);color:var(--text);font-family:var(--font-sans);-webkit-font-smoothing:antialiased;} /* Réinitialise marges, définit hauteur 100%, gradient de fond, couleur et police par défaut, et lissage des polices. */
+#zone-jeu{width:100vw;height:100vh;position:relative;overflow:hidden;touch-action:none} /* Conteneur principal : plein écran, position relative, masque débordements et désactive le comportement tactile par défaut. */
+
+/* Accueil */
+#accueil{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:50;gap:18px;backdrop-filter:blur(6px)} /* Ecran d'accueil centré en absolute couvrant la zone, mise en page en colonne avec espace et flou d’arrière-plan. */
+#accueil-titre{font-family:var(--font-arcade);font-size:18px;letter-spacing:1.5px;color:var(--accent2);text-shadow:0 0 16px rgba(255,213,107,0.12)} /* Style du titre d'accueil : police arcade, taille, espacement, couleur accent et léger halo (text-shadow). */
+#accueil-boutons{display:flex;gap:12px;flex-wrap:wrap;justify-content:center} /* Conteneur boutons : ligne flexible, espacement, retour à la ligne si besoin, centré. */
+
+/* Boutons */
+.btn{background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.06);padding:12px 18px;border-radius:12px;color:var(--text);font-weight:600;font-size:14px;cursor:pointer;min-width:120px;box-shadow:0 6px 18px rgba(2,6,23,0.6);transition:transform .12s} /* Style général des boutons : fond légèrement texturé, bord, padding, arrondi, couleur, minimum largeur, ombre et transition tactile. */
+.btn:active{transform:translateY(2px) scale(.995)} /* Effet d’appui : translation et léger scale pour donner un retour tactile. */
+.btn.ghost{background:transparent;border:1px dashed rgba(255,255,255,0.04);opacity:.95} /* Variante "ghost" : fond transparent et bordure en pointillés pour style secondaire. */
+
+/* Infos */
+#infos{position:absolute;top:12px;left:12px;color:var(--muted);font-size:12px;z-index:10;background:var(--panel);padding:10px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.6);backdrop-filter:blur(6px)} /* Boîte d’infos : position en haut à gauche, style panel semi-transparent, arrondi, ombre et flou d’arrière-plan pour lisibilité. */
+#infos div{line-height:1.25;color:var(--text)} /* Règle pour les enfants de #infos : espacement de ligne et couleur de texte principale. */
+
+/* CIBLE — cercle néon statique */
+.cible{ /* Début du bloc de règles pour la classe .cible (élément cliquable). */
+  width: clamp(var(--target-min), 18vmin, var(--target-max)); /* Largeur responsive : clamp entre min et max avec unité viewport pour adaptabilité. */
+  height: clamp(var(--target-min), 18vmin, var(--target-max)); /* Hauteur responsive assortie à la largeur pour garder un cercle. */
+  border-radius:50%; /* Rend la forme parfaitement ronde. */
+  position:absolute; /* Position absolue pour pouvoir placer la cible n’importe où dans #zone-jeu via script. */
+  display:none; /* Par défaut cachée ; le script affichera la cible quand nécessaire. */
+  z-index:12; /* Empilement pour que la cible apparaisse au-dessus de certains éléments. */
+  touch-action:none; /* Désactive gestes tactiles natifs (panning/zoom) pour interactions personnalisées. */
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.12), rgba(255,255,255,0.02) 30%), /* Couche de fond : dégradé radial pour simuler un éclairage interne à la cible. */
+              linear-gradient(180deg, rgba(255,107,107,0.98), rgba(255,50,70,0.9)); /* Couche de fond : dégradé linéaire rouge pour l’effet néon principal. */
+  box-shadow: var(--neon-shadow), inset 0 6px 18px rgba(255,255,255,0.06); /* Ombre externe néon + ombre interne pour profondeur et halo lumineux. */
+  border: 3px solid rgba(255,255,255,0.08);  /* Bord léger autour de la cible pour la définition du contour. */
+  align-items:center; /* Aligne verticalement les éléments internes au centre. */
+  justify-content:center; /* Aligne horizontalement les éléments internes au centre. */
+}
+.cible::after{ content:""; width:60%; height:60%; border-radius:50%; background: rgba(255,255,255,0.06); box-shadow: inset 0 -6px 18px rgba(0,0,0,0.25); }
+
+/* central message */
+#message-centre{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--text);font-size:16px;text-align:center;padding:14px 18px;border-radius:12px;background:linear-gradient(180deg, rgba(0,0,0,0.65), rgba(0,0,0,0.45));display:none;z-index:15;white-space:pre-line} /* Pseudo-élément central : disque plus sombre à l’intérieur pour effet d’anneau intérieur. */
+
+/* écran fin */
+#fin-container{position:absolute;inset:0;background:linear-gradient(180deg, rgba(2,6,23,0.6), rgba(2,6,23,0.5));display:none;z-index:30;padding:20px;box-sizing:border-box;flex-direction:column;gap:12px} /* Conteneur écran de fin : couvre la zone, gradient foncé, caché par défaut, layout colonne et espacement. */
+#fin-gauche{padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))} /* Colonne gauche de fin : panel subtilement éclairé avec arrondis et padding. */
+#fin-titre{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--accent2);font-family:var(--font-arcade)} /* Style du titre de l’écran de fin : police arcade, couleur accent, taille et graisse. */
+#fin-resultat{font-size:16px;color:var(--text);white-space:pre-line;text-align:center;margin-bottom:6px} /* Zone du résultat : texte centré, prend en charge retours à la ligne et marge inférieure. */
+#fin-message-info{font-size:12px;color:var(--muted);text-align:center} /* Petit message d’info sur l’écran de fin : texte atténué et centré. */
+
+/* scores */
+#scores-container{max-height:45vh;overflow:auto;padding:6px 0} /* Conteneur des scores : hauteur max relative à la viewport, scroll si nécessaire et padding vertical. */
+#scores-table{width:100%;border-collapse:collapse;font-size:12px;color:var(--muted)} /* Table des scores : largeur pleine, suppression des espaces de bordure et style texte atténué. */
+#scores-table th,#scores-table td{padding:8px 6px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.02)} /* Cellules du tableau : padding, alignement à gauche et ligne de séparation discrète. */
+#scores-table thead th{position:sticky;top:0;background:rgba(0,0,0,0.25);color:var(--accent2);font-family:var(--font-arcade);font-size:11px} /* En-tête collant : reste visible en scroll, fond translucide et style arcade pour titres colonnes. */
+.ligne-meilleur{font-weight:700;color:var(--accent2)} /* Classe pour mettre en avant la meilleure ligne du classement (gras + couleur accent). */
+.ligne-dernier{background:linear-gradient(90deg, rgba(164,231,162,0.08), rgba(164,231,162,0.03));color:var(--text)} /* Classe pour mettre en évidence la dernière entrée (fond vert léger et texte principal). */
+
+/* fin boutons */
+#fin-boutons{display:flex;gap:12px;justify-content:center;margin-top:8px;flex-wrap:wrap} /* Commentaire pour la section des boutons sur l’écran de fin. */
+
+/* Responsive tweaks */
+@media (max-width:420px){ /* Début media query pour écrans étroits (mobile). */
+  #accueil-titre{font-size:14px} /* Réduit la taille du titre d’accueil sur petits écrans. */
+  .btn{padding:10px 14px;font-size:13px;min-width:110px} /* Ajuste padding, taille de police et largeur minimale des boutons pour mobile. */
+  #infos{font-size:11px;padding:8px} /* Réduit taille et padding du panneau d’infos pour tenir sur petits écrans. */
+  #message-centre{font-size:14px;padding:12px} /* Réduit légèrement le message central pour s’adapter sur mobile. */
+}
+@media (min-width:900px){ /* Début media query pour écrans larges (desktop). */
+  #accueil{gap:26px} /* Augmente l’espacement vertical dans l’accueil sur grand écran. */
+  #accueil-titre{font-size:22px} /* Augmente la taille du titre d’accueil sur grand écran. */
+  .btn{min-width:160px;font-size:15px} /* Augmente la largeur minimale et la police des boutons sur grand écran. */
+  #zone-jeu{padding:20px} /* Ajoute un padding général autour de la zone de jeu sur grands écrans. */
+}
